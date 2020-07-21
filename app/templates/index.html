@@ -1,0 +1,80 @@
+{% load static %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="{% static 'css/hate_speech/hateSpeechPage.css' %}" >
+<!--<script>-->
+<!--$(document).ready(function() {-->
+<!--$( '.navbar .navbar-nav a' ).on( 'click', function () {-->
+<!--	$( '.navbar .navbar-nav' ).find( 'li.active' ).removeClass( 'active' );-->
+<!--	$( this ).parent( 'li' ).addClass( 'active' );-->
+<!--});-->
+<!--});-->
+<!--</script>-->
+<script>
+    $(document).ready(function() {
+      $("#id_tweet").on('select', function() {
+        if (window.getSelection) {
+          text = window.getSelection().toString();
+          var start_index = this.selectionStart;
+          var end_index = this.selectionEnd;
+          $("#id_improve").val($('#id_improve').val() + this.value.substr(start_index, end_index) + ',' )
+        }
+      })
+    });
+
+</script>
+{% if messages %}
+  <div class="row" style="position: fixed; bottom: 0; right: 0; margin-right: 12;">
+  <div>
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="max-height:40px; padding-top:0;padding-bottom:0;">
+          <strong>{{ message }}</strong>
+        <button style="padding-top:0;padding-bottom:0;" type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+{% endif %}
+<nav class="mb-1 navbar navbar-expand-lg bg-dark navbar-dark">
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto">
+      <li class=" active mt-1">
+        <a style="color: white" class="py-0 nav-link" href="/"><i class="fa fa-home"></i>
+          <span class="sr-only">(current)</span>
+        </a>
+      </li>
+        <li>
+            <span>&nbsp;&nbsp;/&nbsp;&nbsp; </span>
+        </li>
+        <li>
+            <a style="color: white" href="#">hate-speech-page</a>
+        </li>
+    </ul>
+    <ul class="navbar-nav">
+        <li>
+            <form  action="{% url 'improve-hurtlex' language=language %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button class="btn btn-outline-success" type="submit">{% if language == 'EN' %} Improve Hurtlex {% else %} Améliorer Hurtlex {% endif %}</button>
+            </form>
+        </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li>
+          <a class="dropdown-item" href="{% url 'main-page' language='EN' %}"><img src="{% static 'image/english.png' %}" width="20" height="20"> {% if language == 'EN' %} <span style="color: white"> English </span>  {% else %} <span style="color: gray"> Anglais </span> {% endif %} </a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{% url 'main-page' language='FR' %}"><img src="{% static 'image/french.png' %}" width="20" height="20"> {% if language == 'FR' %} <span style="color: white"> Francais </span>  {% else %} <span style="color: gray"> French </span> {% endif %} </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+{% block hateSpeechPage_content %}{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'index.html' %}
+
+{% block hateSpeechPage_content %}
+{% load crispy_forms_tags %}
+{% load static %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="hate-speech-predict container-fluid col" style="padding-top: 30">
+      <fieldset class="scheduler-border">
+        <legend class="scheduler-border">{% if language == 'EN' %} Prediction {% else %} Prédiction {% endif %}</legend>
+        <div class="hate-speech-input">
+          <form  action="{% url 'main-page' language=language %}" method="post" style="display:inline;">
+            <div class="form-group">
+              {% csrf_token %}
+              {{ formInput|crispy }}
+              <input type="hidden" name="prediction" value="{{prediction}}">
+              <input  type="submit" class="btn btn-primary" value="{% if language == 'EN' %} Submit Query {% else %} Soumettre la requête {% endif %}">
+            </div>
+          </form>
+        </div>
+        <div class="hate-speech-output">
+          <form  method="get">
+            <div class="form-group">
+              <label for="output">{% if language == 'EN' %} Output {% else %} Sortie {% endif %}</label>
+              <textarea class="form-control" id="output" rows="3"> {{ formOutput }} </textarea>
+            </div>
+          </form>
+        </div>
+        <br style="line-height:15px;">
+        <hr>
+        <div class="hate-speech-input-improve">
+          <form  action="{% url 'main-page' language=language %}" method="post" style="display:inline;">
+            <div class="form-row">
+              <div class="form-group col-md-2 mb-0">
+                  {% csrf_token %}
+                  {{ formLanguage | crispy}}
+              </div>
+              <div class="form-group col-md-9 mb-0">
+                {% csrf_token %}
+                {{ formImprove | crispy}}
+              </div>
+              <input  style="height: 38px; margin-top: 31px" type="submit" class="btn btn-success col-md-1" value="{% if language == 'EN' %} Add {% else %} Ajouter {% endif %}">
+            </div>
+          </form>
+        </div>
+      </fieldset>
+    </div>
+    <div class="hate-speech-build-model container-fluid col" style="padding-top: 30;">
+      <fieldset class="scheduler-border">
+        <legend class="scheduler-border">{% if language == 'EN' %} Build Models {% else %} Créer des modèles {% endif %}</legend>
+        <div class="hate-speech-model-input">
+          <form  action="{% url 'main-page' language=language %}" method="post" style="display:inline;">
+            <div class="form-group">
+              {% csrf_token %}
+              {{ formModel|crispy }}
+              <input type="hidden" name="model" value="{{model}}">
+              <input  type="submit" class="btn btn-primary" value="{% if language == 'EN' %} Generate Model {% else %} Générer un modèle {% endif %}">
+            </div>
+          </form>
+        </div>
+      </fieldset>
+      <fieldset class="scheduler-border">
+        <legend class="scheduler-border">{% if language == 'EN' %} Log From Currently Generated Model {% else %} Journal du modèle actuellement généré {% endif %}</legend>
+        <div class="hate-speech-model-input">
+          <form  method="get">
+            <div class="form-group">
+              <textarea class="form-control" id="log_output" rows="10"> {% for log in logs %} {{ log }} &#13;&#10; {% endfor %} </textarea>
+            </div>
+          </form>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</div>
+{% endblock %}
